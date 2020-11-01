@@ -1,5 +1,8 @@
 package chromosome;
 
+import lombok.Data;
+
+@Data
 public class KnapsackGene {
 
     private final Item item;

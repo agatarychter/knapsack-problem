@@ -9,6 +9,12 @@ import java.util.stream.Stream;
 
 public abstract class SinglePointCrossover implements Crossover {
 
+    private final double maxCapacity;
+
+    public SinglePointCrossover(double maxCapacity) {
+        this.maxCapacity = maxCapacity;
+    }
+
     @Override
     public abstract List<KnapsackChromosome> crossover(List<KnapsackChromosome> parents);
 
@@ -19,7 +25,10 @@ public abstract class SinglePointCrossover implements Crossover {
         List<KnapsackGene> crossedGenes = Stream
                 .concat(genesToLocus.stream(), genesFromLocus.stream())
                 .collect(Collectors.toList());
-        return new KnapsackChromosome(crossedGenes);
+        KnapsackChromosome child = new KnapsackChromosome(crossedGenes);
+        if(child.exceedsWeight(maxCapacity))
+            child.correct(maxCapacity);
+        return child;
     }
 
     private void checkLocusRange(int locus, int size){

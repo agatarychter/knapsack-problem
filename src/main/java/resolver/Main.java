@@ -3,6 +3,7 @@ package resolver;
 import chromosome.Item;
 import crossover.TwoChildrenSinglePointCrossover;
 import selection.RouletteSelection;
+import selection.TourneySelection;
 
 import java.util.AbstractMap;
 import java.util.List;
@@ -41,8 +42,8 @@ public class Main {
                 MAX_GENERATION_SIZE,
                 POPULATION_SIZE,
                 MUTATION_PROBABILITY,
-                new RouletteSelection(),
-                new TwoChildrenSinglePointCrossover(CROSSOVER_PROBABILITY));
+                new TourneySelection(TOURNEY_GROUP_SIZE),
+                new TwoChildrenSinglePointCrossover(CROSSOVER_PROBABILITY, MAX_CAPACITY));
 
         System.out.println(knapsackProblemResolver.solve());
         System.out.println("1111010000");

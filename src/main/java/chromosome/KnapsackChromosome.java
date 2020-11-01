@@ -2,11 +2,13 @@ package chromosome;
 
 import lombok.Data;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.Callable;
 
 @Data
 public class KnapsackChromosome {
 
+    private final static Random random = new Random();
     private final List<KnapsackGene> genes;
     private double fitness;
 
@@ -26,6 +28,10 @@ public class KnapsackChromosome {
             this.fitness = value();
     }
 
+    public boolean exceedsWeight(double maxCapacity){
+        return weight() > maxCapacity;
+    }
+
     private double weight(){
         return genes
                 .stream()
@@ -40,25 +46,23 @@ public class KnapsackChromosome {
                 .sum();
     }
 
-    public void mutate(Callable<Boolean> shouldMutate) {
-        genes.forEach(
-                gene -> {
-                    try {
-                        if(shouldMutate.call())
-                            gene.mutate();
-                    } catch (Exception e) {
-                        throw new UnsupportedOperationException("Mutation call failed");
-                    }
-                }
-        );
+    public void mutate(boolean shouldMutate) {
+        genes.get(random.nextInt(size())).mutate();
+    }
+
+    public void correct(double maxCapacity) {
+        while(exceedsWeight(maxCapacity)){
+            KnapsackGene gene =  genes.get(random.nextInt(size()));
+            if(gene.isActive())
+                gene.mutate();
+        }
     }
 
     @Override
     public String toString() {
-        return "Fitness: "+ fitness;
-//        StringBuilder stringBuilder = new StringBuilder();
-//        genes.forEach(gene -> stringBuilder.append( gene.toString()+ "\n"));
-//        return stringBuilder.toString();
+        StringBuilder stringBuilder = new StringBuilder();
+        genes.forEach(gene -> stringBuilder.append(gene.isActive()? 1 : 0));
+        stringBuilder.append( "Fitness: "+ fitness);
+        return stringBuilder.toString();
     }
-
 }

@@ -46,7 +46,7 @@ public class RouletteSelection implements Selection{
             else
                 wheel[i] = wheel[i-1] + (population.get(i).getFitness())/fitnessSum;
         }
-        System.out.println(Arrays.toString(wheel));
+//        System.out.println(Arrays.toString(wheel));
         return wheel;
     }
 }

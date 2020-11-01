@@ -10,7 +10,8 @@ public class TwoChildrenSinglePointCrossover extends SinglePointCrossover {
     private final double crossoverProbability;
     private final Random random = new Random();
 
-    public TwoChildrenSinglePointCrossover(double probability) {
+    public TwoChildrenSinglePointCrossover(double probability, double maxCapacity) {
+        super(maxCapacity);
         this.crossoverProbability = probability;
     }
 

@@ -12,7 +12,8 @@ public class OneChildSinglePointCrossover extends SinglePointCrossover {
     private final double crossoverProbability;
     private final Random random = new Random();
 
-    public OneChildSinglePointCrossover(double probability) {
+    public OneChildSinglePointCrossover(double probability, double maxCapacity) {
+        super(maxCapacity);
         this.crossoverProbability = probability;
     }
 

@@ -36,16 +36,17 @@ public class KnapsackProblemResolver {
 
     public KnapsackChromosome solve(){
         int generationSize = 0;
-        List<KnapsackChromosome> population = PopulationGenerator.generatePopulation(items, populationSize);
+        List<KnapsackChromosome> population = PopulationGenerator.generatePopulation(items, populationSize, maxCapacity);
         evaluate(population);
         while(generationSize < maxGenerationSize) {
-            print(population, generationSize);
+//            print(population, generationSize);
             List<KnapsackChromosome> parentsPopulation = selection.select(population);
             List<KnapsackChromosome> children = crossover.crossover(parentsPopulation);
             mutate(children);
             population = children;
             evaluate(population);
             generationSize++;
+            System.out.println(KnapsackChromosomeUtils.findBestFitted(population));
         }
         return KnapsackChromosomeUtils.findBestFitted(population);
     }
@@ -63,7 +64,12 @@ public class KnapsackProblemResolver {
 
     private void mutate(List<KnapsackChromosome> population){
         population.forEach(
-                chromosome -> chromosome.mutate(()->KnapsackChromosomeUtils.lottery(mutationProbability)));
+                chromosome -> {
+                    chromosome.mutate(KnapsackChromosomeUtils.lottery(mutationProbability));
+                    if(chromosome.exceedsWeight(maxCapacity))
+                        chromosome.correct(maxCapacity);
+                }
+                );
     }
 
 }

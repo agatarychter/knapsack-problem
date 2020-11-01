@@ -13,18 +13,21 @@ public class PopulationGenerator {
 
     private static final Random random = new Random();
 
-    public static List<KnapsackChromosome> generatePopulation(List<Item> items, int populationSize){
+
+    public static List<KnapsackChromosome> generatePopulation(List<Item> items, int populationSize, double maxCapacity){
         List<KnapsackChromosome> population = new ArrayList<>(populationSize);
         for(int i =0;i<populationSize ;i++)
-            population.add(generateRandomChromosome(items));
+            population.add(generateRandomChromosome(items, maxCapacity));
         return population;
     }
 
-    private static KnapsackChromosome generateRandomChromosome(List<Item> items){
+    private static KnapsackChromosome generateRandomChromosome(List<Item> items, double maxCapacity){
         List<KnapsackGene> genes =
                 items.stream()
                         .map(item -> new KnapsackGene(item, random.nextBoolean()))
                         .collect(Collectors.toList());
-        return new KnapsackChromosome(genes);
+        KnapsackChromosome chromosome = new KnapsackChromosome(genes);
+        chromosome.correct(maxCapacity);
+        return chromosome;
     }
 }
