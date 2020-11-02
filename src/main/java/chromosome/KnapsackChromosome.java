@@ -1,20 +1,41 @@
 package chromosome;
 
 import lombok.Data;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.concurrent.Callable;
+import java.util.stream.Collectors;
 
 @Data
-public class KnapsackChromosome {
+public class KnapsackChromosome{
 
-    private final static Random random = new Random();
+    private final static Random RANDOM = new Random();
+    private final double maxCapacity;
     private final List<KnapsackGene> genes;
     private double fitness;
 
-    public KnapsackChromosome(List<KnapsackGene> genes) {
+    public KnapsackChromosome(List<KnapsackGene> genes, double maxCapacity) {
         this.genes = genes;
         this.fitness = 0;
+        this.maxCapacity = maxCapacity;
+        correctIfNecessary();
+    }
+
+    private void correctIfNecessary() {
+        while(exceedsWeight(maxCapacity)){
+            KnapsackGene gene =  genes.get(RANDOM.nextInt(size()));
+            if(gene.isActive())
+                gene.mutate();
+        }
+    }
+
+    public KnapsackChromosome deepCopy(){
+        return new KnapsackChromosome(
+                new ArrayList<>(genes.stream()
+                        .map(KnapsackGene::deepCopy)
+                        .collect(Collectors.toList())),
+                maxCapacity);
     }
 
     public int size(){
@@ -26,10 +47,6 @@ public class KnapsackChromosome {
             this.fitness = 0;
         else
             this.fitness = value();
-    }
-
-    public boolean exceedsWeight(double maxCapacity){
-        return weight() > maxCapacity;
     }
 
     private double weight(){
@@ -47,22 +64,21 @@ public class KnapsackChromosome {
     }
 
     public void mutate(boolean shouldMutate) {
-        genes.get(random.nextInt(size())).mutate();
+        if (shouldMutate) {
+            genes.get(RANDOM.nextInt(size())).mutate();
+            correctIfNecessary();
+        }
     }
 
-    public void correct(double maxCapacity) {
-        while(exceedsWeight(maxCapacity)){
-            KnapsackGene gene =  genes.get(random.nextInt(size()));
-            if(gene.isActive())
-                gene.mutate();
-        }
+    private boolean exceedsWeight(double maxCapacity){
+        return weight() > maxCapacity;
     }
 
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
         genes.forEach(gene -> stringBuilder.append(gene.isActive()? 1 : 0));
-        stringBuilder.append( "Fitness: "+ fitness);
+        stringBuilder.append("| Fitness: ").append(fitness);
         return stringBuilder.toString();
     }
 }

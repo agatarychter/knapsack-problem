@@ -13,6 +13,10 @@ public class KnapsackGene {
         this.active = active;
     }
 
+    public KnapsackGene deepCopy(){
+        return new KnapsackGene(item, active);
+    }
+
     public void mutate(){
         this.active = !this.active;
     }

@@ -3,7 +3,6 @@ package selection;
 import chromosome.KnapsackChromosome;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -14,27 +13,13 @@ public class RouletteSelection implements Selection{
     @Override
     public List<KnapsackChromosome> select(List<KnapsackChromosome> population)
     {
-        List<KnapsackChromosome> selected = new ArrayList<>(population.size());
         double fitnessSum = population.stream()
                 .mapToDouble(KnapsackChromosome::getFitness)
                 .sum();
         if(fitnessSum == 0)
             return population;
-        int chosenIndividuals = 0;
         double [] wheel = buildRouletteWheel(population, fitnessSum);
-        double rand = random.nextDouble();
-        while(chosenIndividuals<population.size())
-        {
-            int index = 0;
-            while(rand>wheel[index])
-            {
-                index++;
-            }
-            selected.add(population.get(index));
-            chosenIndividuals++;
-            rand = random.nextDouble();
-        }
-        return selected;
+        return selectByTurningRoulette(population, wheel);
     }
 
     private double[] buildRouletteWheel(List<KnapsackChromosome> population, double fitnessSum){
@@ -46,7 +31,24 @@ public class RouletteSelection implements Selection{
             else
                 wheel[i] = wheel[i-1] + (population.get(i).getFitness())/fitnessSum;
         }
-//        System.out.println(Arrays.toString(wheel));
         return wheel;
+    }
+
+    private List<KnapsackChromosome> selectByTurningRoulette(List<KnapsackChromosome> population, double[] wheel){
+        List<KnapsackChromosome> selected = new ArrayList<>(population.size());
+        int chosenIndividuals = 0;
+        double rand = random.nextDouble();
+        while(chosenIndividuals<population.size())
+        {
+            int index = 0;
+            while(rand>wheel[index])
+            {
+                index++;
+            }
+            selected.add(population.get(index).deepCopy());
+            chosenIndividuals++;
+            rand = random.nextDouble();
+        }
+        return selected;
     }
 }

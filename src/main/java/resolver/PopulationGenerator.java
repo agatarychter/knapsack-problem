@@ -13,8 +13,10 @@ public class PopulationGenerator {
 
     private static final Random random = new Random();
 
-
-    public static List<KnapsackChromosome> generatePopulation(List<Item> items, int populationSize, double maxCapacity){
+    public static List<KnapsackChromosome> generatePopulation(
+            List<Item> items,
+            int populationSize,
+            double maxCapacity){
         List<KnapsackChromosome> population = new ArrayList<>(populationSize);
         for(int i =0;i<populationSize ;i++)
             population.add(generateRandomChromosome(items, maxCapacity));
@@ -26,8 +28,6 @@ public class PopulationGenerator {
                 items.stream()
                         .map(item -> new KnapsackGene(item, random.nextBoolean()))
                         .collect(Collectors.toList());
-        KnapsackChromosome chromosome = new KnapsackChromosome(genes);
-        chromosome.correct(maxCapacity);
-        return chromosome;
+        return new KnapsackChromosome(genes, maxCapacity);
     }
 }

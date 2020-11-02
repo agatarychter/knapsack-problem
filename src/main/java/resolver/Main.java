@@ -12,15 +12,11 @@ import java.util.Map;
 public class Main {
 
     private final static int TOURNEY_GROUP_SIZE = 5;
-    private final static int POPULATION_SIZE = 10;
+    private final static int POPULATION_SIZE = 100;
     private final static int MAX_GENERATION_SIZE = 100;
     private final static double MAX_CAPACITY = 165;
     private final static double MUTATION_PROBABILITY = 0.1;
     private final static double CROSSOVER_PROBABILITY = 0.75;
-
-    private static Map.Entry<Integer, Item> createEntry(int id, double weight, double value){
-        return new AbstractMap.SimpleEntry<>(id, new Item(id, weight, value));
-    }
 
     public static void main(String[] args) {
         List<Item> items = List.of(

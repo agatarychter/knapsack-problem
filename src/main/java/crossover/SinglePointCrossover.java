@@ -25,10 +25,8 @@ public abstract class SinglePointCrossover implements Crossover {
         List<KnapsackGene> crossedGenes = Stream
                 .concat(genesToLocus.stream(), genesFromLocus.stream())
                 .collect(Collectors.toList());
-        KnapsackChromosome child = new KnapsackChromosome(crossedGenes);
-        if(child.exceedsWeight(maxCapacity))
-            child.correct(maxCapacity);
-        return child;
+        return new KnapsackChromosome(crossedGenes, maxCapacity)
+                .deepCopy();
     }
 
     private void checkLocusRange(int locus, int size){

@@ -64,12 +64,7 @@ public class KnapsackProblemResolver {
 
     private void mutate(List<KnapsackChromosome> population){
         population.forEach(
-                chromosome -> {
-                    chromosome.mutate(KnapsackChromosomeUtils.lottery(mutationProbability));
-                    if(chromosome.exceedsWeight(maxCapacity))
-                        chromosome.correct(maxCapacity);
-                }
-                );
+                chromosome -> chromosome.mutate(KnapsackChromosomeUtils.lottery(mutationProbability)));
     }
 
 }

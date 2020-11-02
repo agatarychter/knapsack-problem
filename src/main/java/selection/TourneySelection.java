@@ -6,9 +6,8 @@ import resolver.KnapsackChromosomeUtils;
 import javax.inject.Singleton;
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Singleton
 @Valid
@@ -30,7 +29,7 @@ public class TourneySelection implements Selection {
         int selectedSize = 0;
         while(selectedSize < population.size()){
             List<KnapsackChromosome> tourneyGroup = chooseTourneyGroup(population, groupSize);
-            selected.add(KnapsackChromosomeUtils.findBestFitted(tourneyGroup));
+            selected.add(KnapsackChromosomeUtils.findBestFitted(tourneyGroup).deepCopy());
             selectedSize++;
         }
         return selected;
@@ -38,15 +37,11 @@ public class TourneySelection implements Selection {
 
     private List<KnapsackChromosome> chooseTourneyGroup(List<KnapsackChromosome> population, int groupSize){
         Random random = new Random();
-        List<KnapsackChromosome> tourneyGroup = new ArrayList<>(groupSize);
-        for(int i=0; i< groupSize; i++){
-            int index = random.nextInt(population.size());
-            tourneyGroup.add(
-                    population.get(index));
+        Set<Integer> tourneyGroupIndices = new HashSet<>(groupSize);
+        while(tourneyGroupIndices.size()<groupSize){
+            tourneyGroupIndices.add(random.nextInt(population.size()));
         }
-        return tourneyGroup;
+        return tourneyGroupIndices.stream().map(population::get).collect(Collectors.toList());
     }
 
 }
-
-
